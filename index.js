@@ -75,7 +75,7 @@ function catchGopher() {
     for (let playCount=0; playCount < SAMPLE_SIZE; playCount++) {
         const {pass, holesCount, efficiency} = catchGopher();
         if (!pass) {
-            console.log(`Inefficient algorithm, unable to catch Gopher reliably when holes count = ${holesCount}; succeed ${playCount} rounds.`);
+            console.log(`FAILED: Inefficient algorithm, unable to catch Gopher reliably when holes count = ${holesCount}; succeed ${playCount} rounds.`);
             return false;
         }
         if (best === -1 || efficiency < best) 
@@ -84,6 +84,6 @@ function catchGopher() {
             worst = efficiency
         averageSum += efficiency;
     }
-    console.log(`Efficiency (1 = O(n), smaller value indicates better efficiency) - Best: ${best}, Worst: ${worst}, Average: ${averageSum / SAMPLE_SIZE}`);
+    console.log(`SUCCESS: Efficiency (1 = O(n), smaller value indicates better efficiency) - Best: ${best}, Worst: ${worst}, Average: ${averageSum / SAMPLE_SIZE}`);
     return true;
 })();
