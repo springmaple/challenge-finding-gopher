@@ -68,7 +68,7 @@ function catchGopher() {
 }
 
 (function() {
-    const SAMPLE_SIZE = 100000;
+    const SAMPLE_SIZE = 1_000_000;
     let best = -1;
     let worst = -1;
     let averageSum = 0;
