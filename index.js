@@ -1,9 +1,9 @@
 /**
- * There is a line of holes (count ranging from 4-100 randomly), with a gopher living under the hole.
+ * There is a line of holes (count ranging from 4-100 randomly) on the ground, and a gopher is living under the hole.
  * 
  * Given the rules:
  * - you can only look into one hole at a time;
- * - if you did not see the gopher in the hole, the gopher will ALWAYS move to adjacent holes.
+ * - if you did not see the gopher in the hole, the gopher will ALWAYS move to adjacent hole before you take the next look.
  * 
  * for example, there are 4 holes and gopher is living under hole index 2:
  *    Hole: 0 1 2 3
@@ -18,6 +18,7 @@
  *            ?   ?
  * 
  * Your task is to write a catcher's algorithm to find the gopher.
+ * The solution cannot be slower than O(n^2)
  */
 
 /**
@@ -25,7 +26,7 @@
  * @param {number} holesCount - Integer. Total hole counts.
  */
 function* catcherAlgorithm(holesCount) {
-    // yields the sequence of looking into the hole. 
+    // yields the hole index (starts from 0, ends at `holesCount` - 1) you want to look into. 
     //
     // e.g 1 - if you wanted to look from first hole to last hole in sequence, do:
     // > for (let i=0; i<holesCount; i++)
@@ -54,7 +55,8 @@ function catchGopher() {
 
     const catcher = catcherAlgorithm(HOLES_COUNT);
     let gopherPosition = INITIAL_POSITION;
-    for (let guessCount=1; guessCount < (HOLES_COUNT * 10); guessCount++) {
+    const worstCase = Math.pow(HOLES_COUNT, 2);
+    for (let guessCount=1; guessCount < worstCase; guessCount++) {
         const nextGuess = catcher.next().value;
         if (nextGuess === undefined)
             return {pass: false, holesCount: HOLES_COUNT, efficiency: -1};
@@ -82,6 +84,6 @@ function catchGopher() {
             worst = efficiency
         averageSum += efficiency;
     }
-    console.log(`Efficiency (1 = O(n), smaller value indicates better efficiency); Best: ${best}, Worst: ${worst}, Average: ${averageSum / SAMPLE_SIZE}`);
+    console.log(`Efficiency (1 = O(n), smaller value indicates better efficiency) - Best: ${best}, Worst: ${worst}, Average: ${averageSum / SAMPLE_SIZE}`);
     return true;
 })();
