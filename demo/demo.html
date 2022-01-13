@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://unpkg.com/konva@8.3.2/konva.min.js"></script>
+    <meta charset="utf-8" />
+    <title>Catch the Gopher</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        background-color: #f0f0f0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+	<div id="padding:20px"><button style="width:200px;height:100px" onclick="firstTry()">Start</button></div>
+	<h2 id="idMoveCount"></h2>
+    <script>
+	  const TOTAL_CIRCLES = 25;
+      const width = window.innerWidth;
+      const height = window.innerHeight * 0.5;
+	  const OFFSET_WIDTH = 30;
+	  const CIRCLE_INTERVAL_WIDTH = 30;
+	  const TIME_INTERVAL_MS = 100;
+	  const MOVE_GOPHER = 1;
+	  const MOVE_PLAYER = 1;
+	  let indexGopher = 1 + Math.floor(Math.random() * (TOTAL_CIRCLES - 1));
+	  let indexPlayer = 0;
+	  let moveCount = 0;
+	  let domMoveCount = document.getElementById("idMoveCount");
+	  let isStartSecondTry = false;
+	  
+      let stage = new Konva.Stage({
+        container: 'container',
+        width: width,
+        height: height,
+      });
+
+      let layer = new Konva.Layer();
+      refreshCanvas();
+      stage.add(layer);
+	  
+	  function refreshCanvas(){
+		layer.destroyChildren();
+		addCircles(TOTAL_CIRCLES);
+		addGopher();
+		addPlayer();
+	  }
+	  
+	  function firstTry(){
+	    let moveInterval = setInterval(()=>{
+			if(indexGopher === indexPlayer) {
+				clearInterval(moveInterval);
+				return;
+			}
+			if(indexPlayer >= TOTAL_CIRCLES - 1){
+				clearInterval(moveInterval);
+			    secondTry();
+				return;
+			}
+			moveGopher();
+			movePlayer();
+			refreshCanvas();
+			moveCount++;
+			domMoveCount.innerHTML = `Move: ${moveCount}`;
+		}, TIME_INTERVAL_MS);
+		
+		function moveGopher(){
+		  if(indexGopher == 0) indexGopher += MOVE_GOPHER;
+		  else if(indexGopher == TOTAL_CIRCLES - 1) indexGopher -= MOVE_GOPHER;
+		  else
+			indexGopher = (Math.random() > .5) ? indexGopher + MOVE_GOPHER : indexGopher - MOVE_GOPHER;
+		}
+		function movePlayer(){
+		  indexPlayer += MOVE_PLAYER;	
+		}
+	  }
+	  
+	  function secondTry(){
+		let moveInterval = setInterval(()=>{
+			if(indexGopher === indexPlayer) {
+				clearInterval(moveInterval);
+				return;
+			}
+			if(indexPlayer <= 0){
+				clearInterval(moveInterval);
+				return;
+			}
+			moveGopher();
+			movePlayer();
+			refreshCanvas();
+			moveCount++;
+			domMoveCount.innerHTML = `Move: ${moveCount}`;
+		}, TIME_INTERVAL_MS);
+		
+		function moveGopher(){
+		  if(indexGopher == 0) indexGopher += MOVE_GOPHER;
+		  else if(indexGopher == TOTAL_CIRCLES - 1) indexGopher -= MOVE_GOPHER;
+		  else
+			indexGopher = (Math.random() > .5) ? indexGopher + MOVE_GOPHER : indexGopher - MOVE_GOPHER;
+		}
+		function movePlayer(){
+		  if(!isStartSecondTry) {
+		    isStartSecondTry = true;
+			return;
+		  }
+		  indexPlayer -= MOVE_PLAYER;	
+		}
+	  }
+	  
+      function addCircles(_total){
+			for(let i=0;i<_total;i++){
+				let circle = new Konva.Circle({
+					x: OFFSET_WIDTH+i*CIRCLE_INTERVAL_WIDTH,
+					y: stage.height() / 2,
+					radius: 10,
+					stroke: 'black',
+					strokeWidth: 2,
+				});
+				layer.add(circle);
+			}
+		  }  
+		  function addGopher(){
+			let circle = new Konva.Circle({
+					x: OFFSET_WIDTH + indexGopher*CIRCLE_INTERVAL_WIDTH,
+					y: stage.height() / 2,
+					radius: 10,
+					fill: 'green',
+					strokeWidth: 2,
+				});
+				layer.add(circle);
+		  }
+		  function addPlayer(){
+			let circle = new Konva.Circle({
+					x: OFFSET_WIDTH + indexPlayer*CIRCLE_INTERVAL_WIDTH,
+					y: stage.height() / 2,
+					radius: 10,
+					fill: 'blue',
+					strokeWidth: 2,
+				});
+				layer.add(circle);
+		  }
+
+   </script>
+  </body>
+</html>
